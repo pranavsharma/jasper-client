@@ -48,8 +48,8 @@ class Mic:
 
         # TODO: Consolidate variables from the next three functions
         THRESHOLD_MULTIPLIER = 1.8
-        RATE = 16000
-        CHUNK = 1024
+        RATE = 44100
+        CHUNK = 4096
 
         # number of seconds to allow to establish threshold
         THRESHOLD_TIME = 1
@@ -58,6 +58,7 @@ class Mic:
         stream = self._audio.open(format=pyaudio.paInt16,
                                   channels=1,
                                   rate=RATE,
+                                  input_device_index = 2, # pranav https://groups.google.com/forum/#!topic/jasper-support-forum/DzsFdAKYbEo
                                   input=True,
                                   frames_per_buffer=CHUNK)
 
@@ -93,8 +94,8 @@ class Mic:
         """
 
         THRESHOLD_MULTIPLIER = 1.8
-        RATE = 16000
-        CHUNK = 1024
+        RATE = 44100
+        CHUNK = 4096
 
         # number of seconds to allow to establish threshold
         THRESHOLD_TIME = 1
@@ -106,6 +107,7 @@ class Mic:
         stream = self._audio.open(format=pyaudio.paInt16,
                                   channels=1,
                                   rate=RATE,
+                                  input_device_index = 2, # pranav https://groups.google.com/forum/#!topic/jasper-support-forum/DzsFdAKYbEo
                                   input=True,
                                   frames_per_buffer=CHUNK)
 
@@ -179,6 +181,7 @@ class Mic:
             transcribed = self.passive_stt_engine.transcribe(f)
 
         if any(PERSONA in phrase for phrase in transcribed):
+#        if (PERSONA in transcribed):  # pranav https://groups.google.com/forum/#!searchin/jasper-support-forum/no$20high$20beep/jasper-support-forum/uUghvOODxM0/UPBLTur7DPIJ
             return (THRESHOLD, PERSONA)
 
         return (False, transcribed)
@@ -202,8 +205,8 @@ class Mic:
             Returns a list of the matching options or None
         """
 
-        RATE = 16000
-        CHUNK = 1024
+        RATE = 44100
+        CHUNK = 4096
         LISTEN_TIME = 12
 
         # check if no threshold provided
@@ -216,6 +219,7 @@ class Mic:
         stream = self._audio.open(format=pyaudio.paInt16,
                                   channels=1,
                                   rate=RATE,
+                                  input_device_index = 2, # pranav https://groups.google.com/forum/#!topic/jasper-support-forum/DzsFdAKYbEo
                                   input=True,
                                   frames_per_buffer=CHUNK)
 

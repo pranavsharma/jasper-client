@@ -4,6 +4,7 @@ import logging
 import difflib
 import mpd
 from client.mic import Mic
+import urllib
 
 # Standard module stuff
 WORDS = ["MUSIC", "SPOTIFY"]
@@ -207,12 +208,12 @@ def reconnect(func, *default_args, **default_kwargs):
 
 
 class Song(object):
-    def __init__(self, id, title, artist, album):
+    def __init__(self, id, pos, title, artist):
 
         self.id = id
+        self.pos = pos
         self.title = title
         self.artist = artist
-        self.album = album
 
 
 class MPDWrapper(object):
@@ -243,14 +244,18 @@ class MPDWrapper(object):
         self.song_artists = []
 
         soup = self.client.playlist()
-        for i in range(0, len(soup) / 10):
-            index = i * 10
-            id = soup[index].strip()
-            title = soup[index + 3].strip().upper()
-            artist = soup[index + 2].strip().upper()
-            album = soup[index + 4].strip().upper()
-
-            self.songs.append(Song(id, title, artist, album))
+        for i in range(0, len(soup) / 4):
+            index = i * 4
+            index = i * 4
+            id = soup[index+3].strip()
+            pos = soup[index+2].strip()
+            title = soup[index].strip()
+            title = title[(title.rfind('/')+1):]
+            title = title[:(title.rfind('.'))]
+            title = urllib.unquote(title).decode('utf8')            
+            artist = soup[index + 1].strip()
+            
+            self.songs.append(Song(id, pos, title, artist))
 
             self.song_titles.append(title)
             self.song_artists.append(artist)
@@ -281,7 +286,13 @@ class MPDWrapper(object):
     @reconnect
     def current_song(self):
         item = self.client.playlistinfo(int(self.client.status()["song"]))[0]
-        result = "%s by %s" % (item["title"], item["artist"])
+        pos = int(item["pos"])
+        title = ""
+        for onesong in self.songs:
+            if onesong.pos == pos:
+                title = onesong.title
+                break
+        result = title
         return result
 
     @reconnect

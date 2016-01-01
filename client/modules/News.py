@@ -3,6 +3,7 @@ import feedparser
 from client import app_utils
 import re
 from semantic.numbers import NumberService
+import pprint
 
 WORDS = ["NEWS", "YES", "NO", "FIRST", "SECOND", "THIRD"]
 
@@ -50,6 +51,11 @@ def handle(text, mic, profile):
     all_titles = "... ".join(str(idx + 1) + ")" +
                              title for idx, title in enumerate(titles))
 
+    if all_titles is None:
+        all_titles = "Could not fetch news"
+    #pprint.pprint(all_titles)
+    
+    """
     def handleResponse(text):
 
         def extractOrdinals(text):
@@ -117,9 +123,8 @@ def handle(text, mic, profile):
         handleResponse(mic.activeListen())
 
     else:
-        mic.say(
-            "Here are the current top headlines. " + all_titles)
-
+    """
+    mic.say("Here are the current top headlines. " + all_titles)
 
 def isValid(text):
     """
